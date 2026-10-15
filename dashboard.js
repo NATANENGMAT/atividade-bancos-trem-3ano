@@ -67,7 +67,7 @@ async function loadRecords() {
     const response=await fetch(`${config.endpoint}/${isTeacher?'professor':'status'}`,{headers,signal:AbortSignal.timeout(20000)});
     const result=await response.json();
     if(!response.ok) {if(response.status===401 && isTeacher){saveSession(null);showLogin();}throw new Error(result.error || 'Não foi possível atualizar.');}
-    records=result.alunos;
+    records=result.alunos.sort((a,b)=>a.turma.localeCompare(b.turma,'pt-BR')||a.nome.localeCompare(b.nome,'pt-BR',{sensitivity:'base'}));
     if(isTeacher){document.querySelector('#teacher-login').hidden=true;document.querySelector('#dashboard').hidden=false;}
     render();message.textContent='';
     document.querySelector('#updated').textContent=`Atualizado em ${dateText(result.atualizado_em)} (Manaus). Atualização automática a cada 30 segundos.`;
